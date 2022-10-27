@@ -3,4 +3,6 @@ public interface User {
 	String fullName = "";
 	String password = "";
 	String secretWord = "";
+
+	boolean checkLogin(String testPass);
 }
