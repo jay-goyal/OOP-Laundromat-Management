@@ -24,14 +24,14 @@ public class Admin extends User {
 		this.secretWord = secretWord;
 	}
 
-	public void changeStudentPlan(Student student, boolean isIron, int numWashes, double costPerWash) {
-		ArrayList<Student.Plan> plans = student.getPlans();
-		Student.Plan activePlan = plans.get(plans.size() - 1);
-		if (activePlan.getWashesGiven() >= numWashes) {
-			student.setPlans(isIron, activePlan.getWashesGiven() + 1, costPerWash);
-		}
-		student.setPlans(isIron, numWashes, costPerWash);
-	}
+//	public void changeStudentPlan(Student student, boolean isIron, int numWashes, double costPerWash) {
+//		ArrayList<Student.Plan> plans = student.getPlans();
+//		Student.Plan activePlan = plans.get(plans.size() - 1);
+//		if (activePlan.getWashesGiven() >= numWashes) {
+//			student.setPlans(isIron, activePlan.getWashesGiven() + 1, costPerWash);
+//		}
+//		student.setPlans(isIron, numWashes, costPerWash);
+//	}
 
 	public void getWeekLaundry(Student[] students) {
 		ArrayList<Student.Wash> washes = new ArrayList();

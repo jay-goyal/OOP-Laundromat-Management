@@ -1,21 +1,13 @@
 import java.util.Scanner;
 
-interface UserFields {
-	final String userName = "";
-	String fullName = "";
-	String password = "";
-	String secretWord = "";
-
-}
-
-public abstract class User implements UserFields {
+public abstract class User {
 	public final String userName = "";
 	private String fullName = "";
 	private String password = "";
 	private String secretWord = "";
 
 	public boolean checkLogin(String testPass) {
-		if (testPass == password) {
+		if (testPass.equals(password)) {
 			System.out.println(fullName + " has logged in.");
 			return true;
 		} else {
