@@ -15,9 +15,18 @@ public enum Hostel {
 	CVR("Wednesday"),
 	MR("Thursday");
 	
-	public final String day;
+	private String day;
+	private String time;
 	
 	private Hostel(String day) {
 		this.day=day;
 	}
+	
+	public String getDay() {
+		return day;
+	}
+	public void setDay(String day) {
+		this.day=day;
+	}
+	
 }

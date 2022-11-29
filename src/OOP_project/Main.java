@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.io.*;
 
 public class Main {
+	
+	
 	//this method is for the initial operations like register,drop laundry,check balance.
 	//right now only register functionality is available on pressing S
 	public static void action() {
@@ -19,7 +21,7 @@ public class Main {
 			
 		}
 	}
-	public static void register_student()throws IOException {
+	public static int register_student()throws IOException {
 		Writer out = null;
 		
 		//We have printing the details of the plans in a new window
@@ -31,6 +33,7 @@ public class Main {
 		
 		//Start taking input from user
 		String username=Swing_classes.create_gui("Enter username");
+		String password=Swing_classes.create_gui("Enter password");
 		
 		//Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
 		File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt");
@@ -42,11 +45,19 @@ public class Main {
 		    while (scanner.hasNextLine()) {
 		        String line = scanner.nextLine();
 		        String[] student_data=line.split(",");
-		        if(student_data[0].equals(username)) { 
-		        	
-		        	JFrame f2=new JFrame();  
-		        	JOptionPane.showMessageDialog(f2,"Sorry, choose a different username! "); 
+		        
+		        if(student_data[0].equals(username)&& student_data[2].equals(password)) {   
+		        	Swing_classes.show_message("You have already registered!! "); 
+		        	Swing_classes.close_gui();
+		        	return 0;
+		        }
+
+		        
+		        else if(student_data[0].equals(username)) {
+		        	Swing_classes.show_message("Sorry, choose a different username! "); 
+		        	Swing_classes.close_gui();
 		        	username=Swing_classes.create_gui("Enter username");
+		        	password=Swing_classes.create_gui("Enter password");
 		        }
 		        
 		    }
@@ -55,31 +66,25 @@ public class Main {
 		}
 		//Take rest of the input
 		String full_name=Swing_classes.create_gui("Enter full name");
-		String password=Swing_classes.create_gui("Enter password");
-		String secret_word=Swing_classes.create_gui("Enter secret_word");
-//		Hostel hostel=Swing_classes.create_gui("Enter hostel");
-//		WashPlan washPlan=Swing_classes.create_gui("Enter washplan");
 		
-		Student bits_student=Student.register(username,full_name,password, secret_word, Hostel.VY,WashPlan.F4);
+		String secret_word=Swing_classes.create_gui("Enter secret word");
+		String ID=Swing_classes.create_gui("Enter ID");
+		String phoneNumber=Swing_classes.create_gui("Enter phoneNumber");
+		String hostel=Swing_classes.create_gui("Enter hostel");
+		String washPlan=Swing_classes.create_gui("Enter washplan");
 		
 		//write this data into the file
-		try {
-			String string_data=username+","+full_name+","+password+","+secret_word+",VY,F4";
-			out = new FileWriter("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt",true);
-			out.write(System.lineSeparator());
-			out.write(string_data);
-			}
-		catch(Exception e) {
-			System.out.println(e);
-			}
-		finally {
-			out.close();
-			}
+		Student.register(username,full_name,password, secret_word,ID,phoneNumber, Hostel.valueOf(hostel),WashPlan.valueOf(washPlan));
 		
 		Swing_classes.close_gui();
+		return 0;
 	}
 	
 	public static void main(String[] args)throws IOException {
-		action();
+		//action();
+		//Admin.admin_register();
+		//Admin.admin_print_details();
+		//Swing_classes.multi_input();
+		Admin.adminScheduleDelivery();
 	}
 }
