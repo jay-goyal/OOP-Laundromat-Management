@@ -1,7 +1,6 @@
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class FileIO {
 	      BufferedReader br = new BufferedReader(new FileReader(file));
 	      PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
 
-	      String line = null;
+	      String line;
 
 	      //Read from the original file and write to the new
 	      //unless content matches data to be removed.
@@ -51,13 +50,9 @@ public class FileIO {
 	      if (!tempFile.renameTo(inFile))
 	        System.out.println("Could not rename file");
 
-	    }
-	    catch (FileNotFoundException ex) {
+	    } catch (IOException ex) {
 	      ex.printStackTrace();
 	    }
-	    catch (IOException ex) {
-	      ex.printStackTrace();
-	    }
-	  }
+	}
 }
 

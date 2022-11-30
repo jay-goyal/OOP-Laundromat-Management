@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Scanner;
 
@@ -33,7 +35,9 @@ public class StudentGUI {
 		
 				
 		//Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
-		File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt");
+		Path relPath = Paths.get("files/Student_data.txt");
+		Path absPath = relPath.toAbsolutePath();
+		File file = new File(absPath.toUri());
 
 		try {
 		    Scanner scanner = new Scanner(file);

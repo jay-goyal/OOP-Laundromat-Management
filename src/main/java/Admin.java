@@ -1,3 +1,5 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,7 +87,9 @@ public class Admin extends User {
 		if(check.equals("Surf Excel")) {
 			String username=Swing_classes.create_gui("Enter username");
 			String password=Swing_classes.create_gui("Enter password");
-			File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Admin_data.txt");
+			Path relPath = Paths.get("files/Admin_data.txt");
+			Path absPath = relPath.toAbsolutePath();
+			File file = new File(absPath.toUri());
 
 			try {
 			    Scanner scanner = new Scanner(file);
@@ -102,7 +106,10 @@ public class Admin extends User {
 			    }
 			    try {
 					String string_data=username+","+password;
-					out = new FileWriter("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Admin_data.txt",true);
+
+					Path relPathOut = Paths.get("files/Admin_data.txt");
+					Path absPathOut = relPathOut.toAbsolutePath();
+					out = new FileWriter(absPathOut.toString(), true);
 					out.write(System.lineSeparator());
 					out.write(string_data);
 					}
@@ -124,7 +131,9 @@ public class Admin extends User {
 	
 	public static void adminPrintDetails() {
 		String s="The Student details are as follows-";
-		File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt");
+		Path relPath = Paths.get("files/Student_data.txt");
+		Path absPath = relPath.toAbsolutePath();
+		File file = new File(absPath.toUri());
 
 		try {
 		    Scanner scanner = new Scanner(file);
@@ -152,8 +161,10 @@ public class Admin extends User {
 		
 		
 		Writer out = null;
-		FileIO.removeLineFromFile("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Hostel_data.txt",hostel);
-		File fileName= new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Hostel_data.txt");
+		Path relPath = Paths.get("files/Hostel_data.txt");
+		Path absPath = relPath.toAbsolutePath();
+		FileIO.removeLineFromFile(absPath.toString(),hostel);
+		File fileName= new File(absPath.toUri());
 		try {
 			out=new FileWriter(fileName,true);
 			String hostelData=hostel+","+day+","+time;

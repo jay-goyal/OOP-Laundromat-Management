@@ -1,3 +1,5 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -156,24 +158,29 @@ public class Student extends User {
 		Writer out2=null;
 		try {
 			String string_data=userName+","+fullName+","+password+","+secretWord+","+ID+","+phoneNumber+","+hostel+","+washPlan+",Balance:"+(washPlan.numWashes)*washPlan.costPerWash;
-			out = new FileWriter("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt",true);
+			Path relPathOut = Paths.get("files/Student_data.txt");
+			Path absPathOut = relPathOut.toAbsolutePath();
+			out = new FileWriter(absPathOut.toString(), true);
 			out.write(System.lineSeparator());
 			out.write(string_data);
 			}
 		catch(Exception e) {
-			System.out.println(e);
+			System.out.println(e.getMessage());
 			}
 		finally {
+			assert out != null;
 			out.close();
 			}
-		String fileName="C:\\Bits pilani\\OOP-Laundromat-Management-main\\"+userName+"_"+password+".txt";
-		
+		String fileName="files/"+userName+"_"+password+".txt";
+		Path relPathStud = Paths.get(fileName);
+		Path absPathStud = relPathStud.toAbsolutePath();
+
 		try {
-			File myObj = new File(fileName);
+			File myObj = new File(absPathStud.toUri());
 		      if (myObj.createNewFile()) {
 		        System.out.println("File created: " + myObj.getName());
 		        
-				out2=new FileWriter(fileName,true);
+				out2=new FileWriter(absPathStud.toString(),true);
 		        out2.write("Washes given:0");
 		        
 		      } else {

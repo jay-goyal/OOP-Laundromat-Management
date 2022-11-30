@@ -1,3 +1,6 @@
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import javax.swing.*;
 import java.io.*;
@@ -21,6 +24,9 @@ public class Main {
 	
 	
 	public static void main(String[] args)throws IOException {
+		Path relFilesPath = Paths.get("files/");
+		Path absFilesPath = relFilesPath.toAbsolutePath();
+		Files.createDirectories(absFilesPath);
 		action();
 		//Admin.adminRegister();
 		//Admin.adminPrintDetails();

@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
+	implementation 'org.openjfx:javafx-swing:20-ea+9'
 }
 
 test {
