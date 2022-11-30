@@ -2,6 +2,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 public class Student extends User {
 	public class Wash {
 		private final double weight;
@@ -134,19 +148,52 @@ public class Student extends User {
 		this.secretWord = secretWord;
 		this.hostel = hostel;
 	}
-
-	public static Student register(String userName, String fullName, String password, String secretWord, Hostel hostel,
-			WashPlan washPlan) {
-		Student student = new Student(
-				userName,
-				fullName,
-				password,
-				secretWord,
-				hostel);
-		student.newPlan(washPlan);
-		return student;
+	
+	
+//I have updated this method
+	public static void register(String userName, String fullName, String password, String secretWord,String ID,String phoneNumber, Hostel hostel,WashPlan washPlan)throws IOException {
+		Writer out = null;
+		Writer out2=null;
+		try {
+			String string_data=userName+","+fullName+","+password+","+secretWord+","+ID+","+phoneNumber+","+hostel+","+washPlan+",Balance:"+(washPlan.numWashes)*washPlan.costPerWash;
+			out = new FileWriter("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt",true);
+			out.write(System.lineSeparator());
+			out.write(string_data);
+			}
+		catch(Exception e) {
+			System.out.println(e);
+			}
+		finally {
+			out.close();
+			}
+		String fileName="C:\\Bits pilani\\OOP-Laundromat-Management-main\\"+userName+"_"+password+".txt";
+		
+		try {
+			File myObj = new File(fileName);
+		      if (myObj.createNewFile()) {
+		        System.out.println("File created: " + myObj.getName());
+		        
+				out2=new FileWriter(fileName,true);
+		        out2.write("Washes given:0");
+		        
+		      } else {
+		        System.out.println("File already exists.");
+		      }
+		    } catch (IOException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }finally {
+				out2.close();
+				}	
 	}
+		
 
+	public void dropWash() {
+		String ID=Swing_classes.create_gui("Enter ID");
+		String weight=Swing_classes.create_gui("Enter weight of laundry");
+		String date=Swing_classes.create_gui("Enter date");
+	}
+	
 	public ArrayList<Plan> getPlans() {
 		return plans;
 	}
