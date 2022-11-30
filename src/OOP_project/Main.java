@@ -13,7 +13,7 @@ public class Main {
 		String check=Swing_classes.create_gui("Enter S to register and L to login");
 		if(check.equals("S")) {
 			try {
-				Student.registerInput();
+				StudentGUI.registerInput();
 			}
 			catch(IOException e) {
 				System.out.println(e.getMessage());
@@ -23,9 +23,9 @@ public class Main {
 	
 	
 	public static void main(String[] args)throws IOException {
-		//action();
+		action();
 		//Admin.adminRegister();
-		Admin.adminPrintDetails();
+		//Admin.adminPrintDetails();
 		//Swing_classes.multi_input();
 		//Admin.adminScheduleDelivery();
 	}

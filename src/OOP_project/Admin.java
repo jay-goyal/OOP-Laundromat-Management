@@ -141,41 +141,25 @@ public class Admin extends User {
 		String s=Swing_classes.multi_input();
 		String[] data=s.split(",");
 		String hostel=data[0];
-		//String day=data[1];
-		//String time=data[2];
-		System.out.println(s);
+		String day=data[1];
+		String time=data[2];
+		//System.out.println(s);
+		
 		
 		Writer out = null;
-		File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Hostel_data.txt");
-		
-		String contents="";
-		
+		FileIO.removeLineFromFile("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Hostel_data.txt",hostel);
+		File fileName= new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Hostel_data.txt");
 		try {
-		    Scanner scanner = new Scanner(file);
-
-		    //now read the file line by line
-		    while (scanner.hasNextLine()) {
-		        String line = scanner.nextLine();
-		        
-		        String[] hostel_data=line.split(",");
-		        System.out.println(hostel_data[0]+" "+hostel_data[1]+" "+hostel_data[2]);
-		        if(hostel_data[0].equals(hostel)) {
-		        	line=s;
-		        }
-		        contents+="\n"+line;
-		}
-		    try {
-		    	out = new FileWriter(file);
-	        	out.write(contents);
-		    }
-		    catch(IOException e) {
-		    	System.out.println(e.getMessage());
-		    }
-		    
-		}
-		    catch(FileNotFoundException e) { 
-			System.out.println(e.getMessage());
-		}
+			out=new FileWriter(fileName,true);
+			String hostelData=hostel+","+day+","+time;
+	        out.write(hostelData);
+	        
+		    } catch (IOException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }finally {
+				out.close();
+				}	
 		
 	}
 }
