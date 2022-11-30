@@ -23,7 +23,7 @@ public class Main {
 	
 	
 	public static void main(String[] args)throws IOException {
-		action();
+		//action();
 		//Admin.adminRegister();
 		//Admin.adminPrintDetails();
 		//Swing_classes.multi_input();
