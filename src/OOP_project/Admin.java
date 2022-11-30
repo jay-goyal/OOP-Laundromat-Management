@@ -72,7 +72,7 @@ public class Admin extends User {
 	}  
 	
 	//following are the new classes added
-	public static void admin_register() throws IOException {
+	public static void adminRegister() throws IOException {
 		
 		Writer out = null;
 		Swing_classes.show_message("You will be allowed to register as admin only if you can correctly answer the secret question in the first attempt");
@@ -117,7 +117,7 @@ public class Admin extends User {
 		}
 	}
 	
-	public static void admin_print_details() {
+	public static void adminPrintDetails() {
 		String s="The Student details are as follows-";
 		File file = new File("C:\\Bits pilani\\OOP-Laundromat-Management-main\\Student_data.txt");
 
