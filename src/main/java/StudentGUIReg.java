@@ -1,13 +1,5 @@
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.EnumSet;
-import java.util.Scanner;
+import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
@@ -35,8 +27,8 @@ public class StudentGUIReg extends JInternalFrame {
 		setTitle("Register Student");
 		c = getContentPane();
 		c.setLayout(null);
-		c.setSize(630, 300);
-		setPreferredSize(new Dimension(630, 300));
+		c.setSize(630, 350);
+		setPreferredSize(new Dimension(630, 350));
 		setFont(new Font("Arial", Font.PLAIN, 20));
 
 		userNameLabel = new JLabel("User Name");
@@ -82,7 +74,7 @@ public class StudentGUIReg extends JInternalFrame {
 		bitsIdLabel = new JLabel("BITS ID");
 		bitsIdLabel.setSize(300, 20);
 		bitsIdLabel.setLocation(10, 140);
-		c.add(fullNameLabel);
+		c.add(bitsIdLabel);
 
 		bitsId = new JTextField();
 		bitsId.setSize(300, 20);
@@ -115,11 +107,13 @@ public class StudentGUIReg extends JInternalFrame {
 		submitButton.setLocation(265, 250);
 		c.add(submitButton);
 
+		submitButton.addActionListener(this::actionListener);
+
 		setVisible(true);
 	}
 
-	public void actionListener(ActionListener e) {
-			studentGui.regSuccess(userName.getText(),fullName.getText(),new String(password.getPassword()),new String( secretWord.getPassword()),bitsId.getText(),phoneNumber.getText(), Hostel.valueOf(hostel.getText()));
+	public void actionListener(ActionEvent e) {
+			studentGui.communicateRegData(userName.getText(),fullName.getText(),new String(password.getPassword()),new String( secretWord.getPassword()),bitsId.getText(),phoneNumber.getText(), Hostel.valueOf(hostel.getText()));
 			setVisible(false);
 	}
 //	public static int registerInput() throws IOException {

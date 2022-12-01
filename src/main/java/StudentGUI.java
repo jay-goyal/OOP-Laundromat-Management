@@ -1,24 +1,43 @@
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
-import java.util.Scanner;
+
+class RegData {
+    String userName;
+    String fullName;
+    String password;
+    String secretWord;
+    String bitsId;
+    String phoneNumber;
+    Hostel hostel;
+
+    public RegData(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
+        this.userName = userName;
+        this.fullName = fullName;
+        this.password = password;
+        this.secretWord = secretWord;
+        this.bitsId = bitsId;
+        this.phoneNumber = phoneNumber;
+        this.hostel = hostel;
+    }
+}
 
 public class StudentGUI implements Runnable {
     protected final Thread t;
     private JInternalFrame internalFrame;
     private final JFrame frame;
-    private Student student;
     private String typeOfFrame;
     private boolean isClosingFlag;
-    public StudentGUI() {
+    private boolean shouldReg;
+    private RegData regData;
+    private static StudentFileWriter studentFileWriter;
+
+    public StudentGUI(StudentFileWriter studentFileWriter) {
         this.t = new Thread(this);
         this.frame = new JFrame();
         typeOfFrame = "Reg";
@@ -33,6 +52,7 @@ public class StudentGUI implements Runnable {
             }
         });
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        StudentGUI.studentFileWriter = studentFileWriter;
     }
 
     public void setInternalFrame() {
@@ -56,52 +76,39 @@ public class StudentGUI implements Runnable {
 
     public void run() {
         while (!isClosingFlag) {
-            System.out.println("RUNNING");
+            System.out.print("");
+            if (typeOfFrame.equals("Reg")) {
+                if (shouldReg) {
+                    regSuccess(regData.userName, regData.fullName, regData.password, regData.secretWord, regData.bitsId, regData.phoneNumber, regData.hostel);
+                    shouldReg = false;
+                }
+            }
         }
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void communicateRegData(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
+        regData = new RegData(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel);
+        shouldReg = true;
     }
 
     public void regSuccess(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
-        Writer out = null;
-
-
         //Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
-        Path relPath = Paths.get("files/Student_data.txt");
-        Path absPath = relPath.toAbsolutePath();
-        File file = new File(absPath.toUri());
-
-        try {
-            Scanner scanner = new Scanner(file);
-
-            //now read the file line by line
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] student_data=line.split(",");
-
-                if(student_data[0].equals(userName)) {
-                    Swing_classes.show_message("User with same user name already exists");
-                    Swing_classes.close_gui();
-                    return;
-                }
-            }
-        } catch(FileNotFoundException ex) {
-            System.out.println(ex.getMessage());
+        if (studentFileWriter.checkUserExists(userName, bitsId)) {
+            Swing_classes.show_message("User with same user name already exists");
+            Swing_classes.close_gui();
+            return;
         }
-
         //We have printing the details of the plans in a new window
-        String s="DETAILS OF WASHPLANS:\n";
+        String s = "DETAILS OF WASHPLANS:\n";
         for (WashPlan plan : EnumSet.allOf(WashPlan.class)) {
-            s+="\n"+plan.toString()+" "+"Iron included:"+plan.isIron+" "+"Number of washes in plan:"+plan.numWashes+" "+"Cost of each wash:"+plan.costPerWash;
+            s += "\n" + plan.toString() + " " + "Iron included:" + plan.isIron + " " + "Number of washes in plan:" + plan.numWashes + " " + "Cost of each wash:" + plan.costPerWash;
         }
         Swing_classes.show_message(s);
-        String washPlan=Swing_classes.create_gui("WashPlan");
+        String washPlan = Swing_classes.create_gui("WashPlan");
 
         //write this data into the file
         try {
-            Student.register(userName,fullName,password, secretWord,bitsId,phoneNumber, hostel,WashPlan.valueOf(washPlan));
+            Student.register(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel, WashPlan.valueOf(washPlan), studentFileWriter);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

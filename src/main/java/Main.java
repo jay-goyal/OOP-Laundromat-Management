@@ -8,12 +8,13 @@ import java.io.*;
 
 public class Main {
 
+    public static final StudentFileWriter studentFileWriter = new StudentFileWriter();
 
     //this method is for the initial operations like register,drop laundry,check balance.
     //right now only register functionality is available on pressing S
     public static void action(String check) {
         if (check.equals("S")) {
-            StudentGUI stdGui = new StudentGUI();
+            StudentGUI stdGui = new StudentGUI(studentFileWriter);
             stdGui.setTypeOfFrame("Reg");
             stdGui.t.start();
         }

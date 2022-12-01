@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.Scanner;
 
-public abstract class User {
-	public final String userName = "";
-	private String fullName = "";
-	private String password = "";
-	private String secretWord = "";
+public abstract class User implements Serializable {
+	public String userName;
+	protected String fullName;
+	protected String password;
+	protected String secretWord;
 
 	public boolean checkLogin(String testPass) {
 		if (testPass.equals(password)) {
@@ -24,7 +25,7 @@ public abstract class User {
 		sc.close();
 	}
 
-	public String getName() {
-		return this.fullName;
+	public String getFullName() {
+		return fullName;
 	}
 }

@@ -23,11 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Admin extends User {
-	public final String userName;
-	private String fullName;
-	private String password;
-	private String secretWord;
-
 	static {
 		ScheduledExecutorService executorService;
 		executorService = Executors.newSingleThreadScheduledExecutor();
