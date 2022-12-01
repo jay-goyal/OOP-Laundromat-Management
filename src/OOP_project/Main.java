@@ -27,6 +27,6 @@ public class Main {
 		//Admin.adminRegister();
 		//Admin.adminPrintDetails();
 		//Swing_classes.multi_input();
-		//Admin.adminScheduleDelivery();
+		Admin.adminScheduleDelivery();
 	}
 }
