@@ -23,4 +23,8 @@ public abstract class User {
 		}
 		sc.close();
 	}
+
+	public String getName() {
+		return this.fullName;
+	}
 }

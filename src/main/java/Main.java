@@ -1,36 +1,33 @@
+import GUI_Templates.SwingSingleInput_GUI;
+
+import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import javax.swing.*;
 import java.io.*;
 
 public class Main {
-	
-	
-	//this method is for the initial operations like register,drop laundry,check balance.
-	//right now only register functionality is available on pressing S
-	public static void action() {
-		String check=Swing_classes.create_gui("Enter S to register and L to login");
-		if(check.equals("S")) {
-			try {
-				StudentGUI.registerInput();
-			}
-			catch(IOException e) {
-				System.out.println(e.getMessage());
-			}			
-		}
-	}
-	
-	
-	public static void main(String[] args)throws IOException {
-		Path relFilesPath = Paths.get("files/");
-		Path absFilesPath = relFilesPath.toAbsolutePath();
-		Files.createDirectories(absFilesPath);
-		action();
-		//Admin.adminRegister();
-		//Admin.adminPrintDetails();
-		//Swing_classes.multi_input();
-		//Admin.adminScheduleDelivery();
-	}
+
+
+    //this method is for the initial operations like register,drop laundry,check balance.
+    //right now only register functionality is available on pressing S
+    public static void action(String check) {
+        if (check.equals("S")) {
+            StudentGUI stdGui = new StudentGUI();
+            stdGui.setTypeOfFrame("Reg");
+            stdGui.t.start();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Path relFilesPath = Paths.get("files/");
+        Path absFilesPath = relFilesPath.toAbsolutePath();
+        Files.createDirectories(absFilesPath);
+        SwingSingleInput_GUI inputCheck = new SwingSingleInput_GUI("Enter S to Register and L to Login", "Submit", Main::action, WindowConstants.EXIT_ON_CLOSE);
+        inputCheck.setVisible(true);
+        //Admin.adminRegister();
+        //Admin.adminPrintDetails();
+        //Swing_classes.multi_input();
+        //Admin.adminScheduleDelivery();
+    }
 }
