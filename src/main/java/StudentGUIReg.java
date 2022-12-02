@@ -114,7 +114,6 @@ public class StudentGUIReg extends JInternalFrame {
 
 	public void actionListener(ActionEvent e) {
 			studentGui.communicateRegData(userName.getText(),fullName.getText(),new String(password.getPassword()),new String( secretWord.getPassword()),bitsId.getText(),phoneNumber.getText(), Hostel.valueOf(hostel.getText()));
-			setVisible(false);
 	}
 //	public static int registerInput() throws IOException {
 //		JTextField username = new JTextField();

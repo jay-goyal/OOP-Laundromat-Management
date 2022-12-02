@@ -75,29 +75,28 @@ public class StudentGUI implements Runnable {
     }
 
     public void run() {
-        while (!isClosingFlag) {
-            System.out.print("");
-            if (typeOfFrame.equals("Reg")) {
-                if (shouldReg) {
-                    regSuccess(regData.userName, regData.fullName, regData.password, regData.secretWord, regData.bitsId, regData.phoneNumber, regData.hostel);
-                    shouldReg = false;
-                }
+        System.out.println("RUNNING");
+        if (typeOfFrame.equals("Reg")) {
+            if (shouldReg) {
+                regSuccess(regData.userName, regData.fullName, regData.password, regData.secretWord, regData.bitsId, regData.phoneNumber, regData.hostel);
+                shouldReg = false;
             }
         }
     }
 
     public void communicateRegData(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
-        regData = new RegData(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel);
-        shouldReg = true;
-    }
-
-    public void regSuccess(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
-        //Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
         if (studentFileWriter.checkUserExists(userName, bitsId)) {
             Swing_classes.show_message("User with same user name already exists");
             Swing_classes.close_gui();
             return;
         }
+        regData = new RegData(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel);
+        shouldReg = true;
+        t.start();
+    }
+
+    public void regSuccess(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
+        //Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
         //We have printing the details of the plans in a new window
         String s = "DETAILS OF WASHPLANS:\n";
         for (WashPlan plan : EnumSet.allOf(WashPlan.class)) {
@@ -108,7 +107,8 @@ public class StudentGUI implements Runnable {
 
         //write this data into the file
         try {
-            Student.register(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel, WashPlan.valueOf(washPlan), studentFileWriter);
+            Student.studentFileWriter = studentFileWriter;
+            Student.register(userName, fullName, password, secretWord, bitsId, phoneNumber, hostel, WashPlan.valueOf(washPlan));
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

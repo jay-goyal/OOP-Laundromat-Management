@@ -8,7 +8,7 @@ import java.io.*;
 
 public class Main {
 
-    public static final StudentFileWriter studentFileWriter = new StudentFileWriter();
+    public static StudentFileWriter studentFileWriter;
 
     //this method is for the initial operations like register,drop laundry,check balance.
     //right now only register functionality is available on pressing S
@@ -16,7 +16,6 @@ public class Main {
         if (check.equals("S")) {
             StudentGUI stdGui = new StudentGUI(studentFileWriter);
             stdGui.setTypeOfFrame("Reg");
-            stdGui.t.start();
         }
     }
 
@@ -24,6 +23,7 @@ public class Main {
         Path relFilesPath = Paths.get("files/");
         Path absFilesPath = relFilesPath.toAbsolutePath();
         Files.createDirectories(absFilesPath);
+        studentFileWriter = new StudentFileWriter();
         SwingSingleInput_GUI inputCheck = new SwingSingleInput_GUI("Enter S to Register and L to Login", "Submit", Main::action, WindowConstants.EXIT_ON_CLOSE);
         inputCheck.setVisible(true);
         //Admin.adminRegister();

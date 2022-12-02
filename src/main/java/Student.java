@@ -136,7 +136,7 @@ public class Student extends User {
     private ArrayList<Plan> plans = new ArrayList<Plan>();
 
     private String bitsID;
-    private static StudentFileWriter studentFileWriter;
+    public static StudentFileWriter studentFileWriter;
 
     public Student(String userName, String fullName, String password, String secretWord, Hostel hostel, String bitsID, StudentFileWriter studentFileWriter) {
         this.userName = userName;
@@ -150,10 +150,11 @@ public class Student extends User {
 
 
     //I have updated this method
-    public static void register(String userName, String fullName, String password, String secretWord, String ID, String phoneNumber, Hostel hostel, WashPlan washPlan, StudentFileWriter studentFileWriter) throws IOException {
+    public static void register(String userName, String fullName, String password, String secretWord, String ID, String phoneNumber, Hostel hostel, WashPlan washPlan) throws IOException {
         try {
             synchronized (studentFileWriter.writeLock) {
                 studentFileWriter.regUserToFile(userName, fullName, password, secretWord, ID, phoneNumber, hostel);
+                studentFileWriter.writeLock.notify();
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -163,6 +164,7 @@ public class Student extends User {
             student.newPlan(washPlan);
             synchronized (studentFileWriter.writeLock) {
                 studentFileWriter.writeStudentToFile(student, false);
+                studentFileWriter.writeLock.notify();
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
