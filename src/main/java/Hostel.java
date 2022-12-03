@@ -2,17 +2,17 @@
 
 public enum Hostel {
 	
-	SR("Monday"),
-	RM("Tuesday"),
-	BD("Wednesday"),
-	KR("Thursday"),
-	GN("Friday"),
-	SK("Saturday"),
-	VY("Sunday"),
-	BG("Monday"),
-	MSA("Tuesday"),
-	CVR("Wednesday"),
-	MR("Thursday");
+	SR("Mon"),
+	RM("Tue"),
+	BD("Wed"),
+	KR("Thu"),
+	GN("Fri"),
+	SK("Sat"),
+	VY("Sun"),
+	BG("Mon"),
+	MSA("Tue"),
+	CVR("Wed"),
+	MR("Thu");
 	
 	private String day;
 	private String time;
