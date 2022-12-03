@@ -1,4 +1,5 @@
 import GUI_Templates.SwingSingleInput_GUI;
+import com.sun.jdi.VoidValue;
 
 import javax.swing.*;
 import java.nio.file.Files;
@@ -12,11 +13,12 @@ public class Main {
 
     //this method is for the initial operations like register,drop laundry,check balance.
     //right now only register functionality is available on pressing S
-    public static void action(String check) {
+    public static Void action(String check) {
         if (check.equals("S")) {
             StudentGUI stdGui = new StudentGUI(studentFileWriter);
             stdGui.setTypeOfFrame("Reg");
         }
+        return null;
     }
 
     public static void main(String[] args) throws IOException {

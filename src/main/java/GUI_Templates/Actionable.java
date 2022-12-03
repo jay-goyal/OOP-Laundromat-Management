@@ -1,5 +1,5 @@
 package GUI_Templates;
 
-public interface Actionable {
-    public void action(String s);
+public interface Actionable<T> {
+    public T action(String s);
 }
