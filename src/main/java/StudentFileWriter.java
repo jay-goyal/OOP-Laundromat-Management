@@ -1,8 +1,6 @@
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class StudentFileWriter {
@@ -92,7 +90,7 @@ public class StudentFileWriter {
         }
     }
 
-    public Object ReadObjectFromFile(String ID) {
+    public Object readStudentFromFile(String ID) {
         Path relPathOut = Paths.get("files/"+ID+".txt");
         Path absPathOut = relPathOut.toAbsolutePath();
 

@@ -131,7 +131,7 @@ public class StudentGUI implements Runnable {
 
     public void communicateCheckData(String ID) {
         synchronized (studentFileWriter.writeLock) {
-            student = (Student) studentFileWriter.ReadObjectFromFile(ID);
+            student = (Student) studentFileWriter.readStudentFromFile(ID);
             Student.studentFileWriter = studentFileWriter;
         }
         shouldRun = true;
@@ -151,7 +151,7 @@ public class StudentGUI implements Runnable {
 
     public void communicateDropData(String ID, double weight, String today) {
         synchronized (studentFileWriter.writeLock) {
-            student = (Student) studentFileWriter.ReadObjectFromFile(ID);
+            student = (Student) studentFileWriter.readStudentFromFile(ID);
             Student.studentFileWriter = studentFileWriter;
         }
         dropData = new DropData(weight, today);
