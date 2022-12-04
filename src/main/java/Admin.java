@@ -48,6 +48,8 @@ public class Admin extends User {
                 }
             }
             Swing_classes.show_message(status.toString());
+        } else {
+            Swing_classes.show_message("Student does not exist");
         }
     }
 
@@ -78,6 +80,8 @@ public class Admin extends User {
                 }
             }
             Swing_classes.show_message("Status of all washes given updated");
+        } else {
+            Swing_classes.show_message("Student does not exist");
         }
     }
 

@@ -27,7 +27,6 @@ public class Student extends User {
         Student.studentFileWriter = Main.studentFileWriter;
     }
 
-
     //I have updated this method
     public static void register(String userName, String fullName, String password, String secretWord, String ID, String phoneNumber, Hostel hostel, WashPlan washPlan) throws IOException {
         try {

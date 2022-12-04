@@ -138,6 +138,10 @@ public class StudentGUI implements Runnable {
     public void communicateCheckData(String ID) {
         synchronized (studentFileWriter.writeLock) {
             student = studentFileWriter.readStudentFromFile(ID);
+            if (student == null) {
+                Swing_classes.show_message("Student does not exist");
+                return;
+            }
             Student.studentFileWriter = studentFileWriter;
             studentFileWriter.writeLock.notify();
         }
@@ -159,6 +163,10 @@ public class StudentGUI implements Runnable {
     public void communicateDropData(String ID, double weight, String today) {
         synchronized (studentFileWriter.writeLock) {
             student = studentFileWriter.readStudentFromFile(ID);
+            if (student == null) {
+                Swing_classes.show_message("Student does not exist");
+                return;
+            }
             Student.studentFileWriter = studentFileWriter;
             studentFileWriter.writeLock.notify();
         }
@@ -169,7 +177,11 @@ public class StudentGUI implements Runnable {
 
     public void communicateReceiveData(String ID,String today) {
         synchronized (studentFileWriter.writeLock) {
-            student = (Student) studentFileWriter.readStudentFromFile(ID);
+            student = studentFileWriter.readStudentFromFile(ID);
+            if (student == null) {
+                Swing_classes.show_message("Student does not exist");
+                return;
+            }
             Student.studentFileWriter = studentFileWriter;
         }
         receiveData = new ReceiveData(today);
