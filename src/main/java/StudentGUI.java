@@ -95,19 +95,17 @@ public class StudentGUI implements Runnable {
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
             }
-            case "Receive"->{
+            case "Recv"->{
                 this.internalFrame = new ReceiveWashGUI(this);
                 frame.setTitle(internalFrame.getTitle());
                 frame.setSize(internalFrame.getPreferredSize());
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
             }
-            default -> frame.setVisible(false);
         }
     }
 
     public void run() {
-        System.out.println("RUNNING");
         if (shouldRun) {
             if (typeOfFrame.equals("Reg")) {
                 regSuccess(regData.userName, regData.fullName, regData.password, regData.secretWord, regData.bitsId, regData.phoneNumber, regData.hostel);
@@ -123,11 +121,13 @@ public class StudentGUI implements Runnable {
                 String status = student.checkAllStatus();
                 Swing_classes.show_message(status);
             }
-            if (typeOfFrame.equals("Receive")) {
+            if (typeOfFrame.equals("Recv")) {
                 student.receiveWash(receiveData.date);
             }
             shouldRun = false;
+            frame.dispose();
         }
+        System.out.println("THREAD EXIT");
     }
 
     public Void getIDForCheck(String ID) {
@@ -160,7 +160,7 @@ public class StudentGUI implements Runnable {
         synchronized (studentFileWriter.writeLock) {
             student = studentFileWriter.readStudentFromFile(ID);
             Student.studentFileWriter = studentFileWriter;
-            studentFileWriter.notify();
+            studentFileWriter.writeLock.notify();
         }
         dropData = new DropData(weight, today);
         shouldRun = true;

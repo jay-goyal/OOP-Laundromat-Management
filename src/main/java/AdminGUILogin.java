@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class AdminGUILogin extends JInternalFrame {
+	private AdminGUI adminGUI;
     private Container c;
 	private JTextField userName;
 	private JLabel userNameLabel;
@@ -11,7 +12,7 @@ public class AdminGUILogin extends JInternalFrame {
 	private JLabel passwordLabel;
     private JButton submitButton;
 
-    public AdminGUILogin(){
+    public AdminGUILogin(AdminGUI adminGUI){
         setTitle("Admin Login");
 		c = getContentPane();
 		c.setLayout(null);
@@ -40,11 +41,20 @@ public class AdminGUILogin extends JInternalFrame {
 		c.add(password);
 
         submitButton = new JButton();
-		submitButton.setText("Register");
+		submitButton.setText("Login");
 		submitButton.setSize(200, 25);
 		submitButton.setLocation(265, 250);
 		c.add(submitButton);
 
+		submitButton.addActionListener(this::actionListener);
+
         setVisible(true);
+		this.adminGUI = adminGUI;
     }
+
+	public void actionListener(ActionEvent e) {
+		String uname = userName.getText();
+		String passwd = new String(password.getPassword());
+		adminGUI.communicateLoginData(uname, passwd);
+	}
 }

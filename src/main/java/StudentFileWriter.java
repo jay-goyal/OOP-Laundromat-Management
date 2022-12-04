@@ -45,7 +45,7 @@ public class StudentFileWriter {
 
     public ArrayList<String> getAllIDs(Hostel hostel) {
         Scanner scanner = null;
-        ArrayList<String> IDs = null;
+        ArrayList<String> IDs = new ArrayList<>();
         try {
             scanner = new Scanner(file);
             //now read the file line by line

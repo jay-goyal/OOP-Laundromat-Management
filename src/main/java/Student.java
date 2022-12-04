@@ -41,7 +41,7 @@ public class Student extends User {
         }
         try {
             Student student = new Student(userName, fullName, password, secretWord, hostel, ID);
-            student.setPlan(new Plan(washPlan, washPlan.costPerWash * washPlan.numWashes, washPlan.numWashes));
+            student.setPlan(new Plan(washPlan, washPlan.costPerWash * washPlan.numWashes, 0));
             synchronized (studentFileWriter.writeLock) {
                 studentFileWriter.writeStudentToFile(student, false);
                 studentFileWriter.writeLock.notify();
@@ -57,6 +57,7 @@ public class Student extends User {
 
         System.out.println(today);
         if (!today.split(",")[0].equals(allotedDay)) {
+            System.out.println("RUNNING");
             System.out.println(allotedDay);
             Swing_classes.show_message("You can only drop laundry on your alloted day. Drop is cancelled");
             return;
@@ -78,37 +79,37 @@ public class Student extends User {
             plan.setExpense(plan.getExpense() + plan.getExtraCharge());
         }
         plan.addWash(new Wash(today, "Dropped", plan.getWashPlan().costPerWash + washExtras));
-        String deliveryDate = null;
-        try {
-            LocalDate todayAsLocal = Instant.ofEpochMilli(simpleDateFormat.parse(today).getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-            deliveryDate = todayAsLocal.plusDays(2).toString();
-        } catch (ParseException ex) {
-            System.out.println(ex.getMessage());
-        }
-
         synchronized (studentFileWriter.writeLock) {
             try {
                 studentFileWriter.writeStudentToFile(this, true);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             } finally {
-                studentFileWriter.notify();
+                studentFileWriter.writeLock.notify();
             }
         }
 
-        Swing_classes.show_message("Laundry dropped. It will be delivered on " + deliveryDate);
+        Swing_classes.show_message("Laundry dropped. It will be delivered on " + DeliverySchedule.hostelDay.get(hostel) + " at " + DeliverySchedule.hostelTime.get(hostel) + "hrs");
     }
 
-    public void receiveWash(String date){
-        for(Wash wash:plan.getWashList()){
-            if(date.equals(wash.getDateGiven())){
-                if(wash.getStatus().equals("On Delivery")){
+    public void receiveWash(String date) {
+        for (Wash wash : plan.getWashList()) {
+            if (date.equals(wash.getDateGiven())) {
+                if (wash.getStatus().equals("On Delivery")) {
                     wash.setStatus("Delivered");
                     Swing_classes.show_message("The laundry has been received !!!");
+                    synchronized (studentFileWriter.writeLock) {
+                        try {
+                            studentFileWriter.writeStudentToFile(this, true);
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                        } finally {
+                            studentFileWriter.writeLock.notify();
+                        }
+                    }
                     return;
-                }
-                else {
-                    Swing_classes.show_message("Laundry status:"+wash.getStatus()+". Wait till status is marked On Delivery");
+                } else {
+                    Swing_classes.show_message("Laundry status:" + wash.getStatus() + ". Wait till status is marked On Delivery");
                     return;
                 }
             }
@@ -118,31 +119,31 @@ public class Student extends User {
 
     public Wash getLastWash() {
         ArrayList<Wash> washes = plan.getWashList();
+        if (washes.size() == 0) {
+            return null;
+        }
         System.out.println(washes);
         return washes.get(washes.size() - 1);
     }
 
     public String checkStatus(Wash wash) {
+        if (wash == null) {
+            return "No wash given";
+        }
         return wash.toString();
     }
 
     public String checkAllStatus() {
         ArrayList<Wash> washes = plan.getWashList();
+        if (washes.size() == 0) {
+            return "No wash given";
+        }
         StringBuilder status = new StringBuilder();
         for (Wash wash : washes) {
             status.append(wash.toString()).append("\n");
         }
         return status.toString();
     }
-
-    public void checkExpense() {
-        for (Wash wash : plan.getWashList()) {
-            s += "\n" + wash.toString();
-        }
-        s += "\n" + plan.getExpense();
-        Swing_classes.show_message(s);
-    }
-
 
     public String getID() {
         return this.bitsID;

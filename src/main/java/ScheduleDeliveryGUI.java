@@ -1,18 +1,10 @@
 import java.awt.*;
-import java.text.*;
 import java.awt.event.ActionEvent;
-import java.text.DateFormat;
-import java.time.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.util.Date;
 
 import javax.swing.*;
 
-public class scheduleDeliveryGUI extends JInternalFrame{
+public class ScheduleDeliveryGUI extends JInternalFrame{
+	private AdminGUI adminGui;
     private Container c;
     private JTextField hostel;
 	private JLabel hostelLabel;
@@ -23,7 +15,7 @@ public class scheduleDeliveryGUI extends JInternalFrame{
     private JLabel timeLabel;
 
 
-public scheduleDeliveryGUI() {
+public ScheduleDeliveryGUI(AdminGUI adminGui) {
     setTitle("Schedule Delivery");
 		c = getContentPane();
 		c.setLayout(null);
@@ -67,6 +59,17 @@ public scheduleDeliveryGUI() {
 		submitButton.setLocation(265, 250);
 		c.add(submitButton);
 
+		submitButton.addActionListener(this::actionListener);
+
+		this.adminGui = adminGui;
+
         setVisible(true);
     }
+
+	public void actionListener(ActionEvent e) {
+		String hostelStr = hostel.getText();
+		String dayStr = day.getText();
+		String timeStr = time.getText();
+		adminGui.communicateSchdData(hostelStr, dayStr, timeStr);
+	}
 }

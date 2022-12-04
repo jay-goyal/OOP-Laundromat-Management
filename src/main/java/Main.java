@@ -34,11 +34,35 @@ public class Main {
             }
             case "R" -> {
                 StudentGUI stdGui = new StudentGUI(studentFileWriter);
-                stdGui.setTypeOfFrame("Receive");
+                stdGui.setTypeOfFrame("Recv");
+            }
+            case "L1" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("Login");
             }
             case "AC" -> {
                 AdminGUI adminGui = new AdminGUI();
                 adminGui.setTypeOfFrame("PrintStud");
+            }
+            case "T" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("CheckStat");
+            }
+            case "U" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("Update");
+            }
+            case "SA" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("Schd");
+            }
+            case "RA" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("Rev");
+            }
+            case "L2" -> {
+                AdminGUI adminGui = new AdminGUI();
+                adminGui.setTypeOfFrame("Logout");
             }
         }
 
@@ -49,8 +73,9 @@ public class Main {
         Path relFilesPath = Paths.get("files/");
         Path absFilesPath = relFilesPath.toAbsolutePath();
         Files.createDirectories(absFilesPath);
-        admin = new Admin("admin", "Admin User", "admin123", "admin");
+        DeliverySchedule del = new DeliverySchedule();
         studentFileWriter = new StudentFileWriter();
+        admin = new Admin("admin", "Admin User", "admin123", "admin");
         SwingSingleInput_GUI inputCheck = new SwingSingleInput_GUI("Enter the operation", "Submit", Main::action, WindowConstants.EXIT_ON_CLOSE);
         inputCheck.setVisible(true);
         JFrame frame = new JFrame();
