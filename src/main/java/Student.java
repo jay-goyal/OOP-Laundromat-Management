@@ -1,26 +1,20 @@
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Scanner;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 public class Student extends User {
     
     public Hostel hostel;
     private String bitsID;
     Plan plan;
-    
+    String s="";
     public static StudentFileWriter studentFileWriter;
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("D, d MMM yyyy");
 
     public Student(String userName, String fullName, String password, String secretWord, Hostel hostel, String bitsID, StudentFileWriter studentFileWriter) {
         this.userName = userName;
@@ -39,7 +33,7 @@ public class Student extends User {
     public static void register(String userName, String fullName, String password, String secretWord, String ID, String phoneNumber, Hostel hostel, WashPlan washPlan) throws IOException {
         try {
             synchronized (studentFileWriter.writeLock) {
-                studentFileWriter.regUserToFile(userName, fullName, password, secretWord, ID, phoneNumber, hostel,washPlan);
+                studentFileWriter.regUserToFile(userName, fullName, password, secretWord, ID, phoneNumber, hostel);
                 studentFileWriter.writeLock.notify();
             }
         } catch (IOException e) {
@@ -47,6 +41,7 @@ public class Student extends User {
         }
         try {
             Student student = new Student(userName, fullName, password, secretWord, hostel, ID, studentFileWriter);
+            student.setPlan(new Plan(washPlan, washPlan.costPerWash * washPlan.numWashes, washPlan.numWashes));
             synchronized (studentFileWriter.writeLock) {
                 studentFileWriter.writeStudentToFile(student, false);
                 studentFileWriter.writeLock.notify();
@@ -56,15 +51,13 @@ public class Student extends User {
         }
     }
     
-    public Plan getPlan() {
-    	return plan;
-    }
-
-
     public void dropWash(double Weight,String today) {
     	String allotedDay=hostel.getDay();
-		
-		if(!today.equals(allotedDay)) {
+        double washExtras = 0;
+
+        System.out.println(today);
+		if(!today.split(",")[0].equals(allotedDay)) {
+            System.out.println(allotedDay);
 			Swing_classes.show_message("You can only drop laundry on your alloted day. Drop is cancelled");
 			return;
 		}
@@ -72,31 +65,57 @@ public class Student extends User {
 		
 		if(plan.getNumWashGiven()>=washplan.numWashes) {
 			plan.incrementNumWashGiven();
-			plan.incrementExtraCharge(washplan.weightPerWash);
+            washExtras += washplan.costPerWash;
+			plan.incrementExtraCharge(washplan.costPerWash);
 			Swing_classes.show_message("You have been charged the cost of one extra wash as you have exhausted the number of washes available in your plan");
 			plan.setExpense(plan.getExpense()+plan.getExtraCharge());
 		}
 		
 		if(washplan.weightPerWash<Weight) {
+            washExtras += (Weight-washplan.weightPerWash)*20;
 			plan.incrementExtraCharge((Weight-washplan.weightPerWash)*20);
 			Swing_classes.show_message("You have been charged Rs "+ Double.toString((Weight-washplan.weightPerWash)*20)+"extra");
 			plan.setExpense(plan.getExpense()+plan.getExtraCharge());
 		}
-		plan.addWash(new Wash(today,"Dropped",plan.getExpense()));
-		String deliveryDate=LocalDate.parse(today).plusDays(2).toString();
+		plan.addWash(new Wash(today,"Dropped",plan.getWashPlan().costPerWash + washExtras));
+        String deliveryDate = null;
+        try {
+            LocalDate todayAsLocal = Instant.ofEpochMilli(simpleDateFormat.parse(today).getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+            deliveryDate = todayAsLocal.plusDays(2).toString();
+        } catch (ParseException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        synchronized (studentFileWriter.writeLock) {
+            try {
+                studentFileWriter.writeStudentToFile(this, true);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
 		
 		Swing_classes.show_message("Laundry dropped. It will be delivered on "+deliveryDate);
-		
+    }
+
+    public Wash getLastWash() {
+        ArrayList<Wash> washes = plan.getWashList();
+        System.out.println(washes);
+        return washes.get(washes.size() - 1);
     }
     
-    
-    public void checkStatus() {
-    	ArrayList<Wash> allWash=plan.getWashList();
-    	Wash currentWash=allWash.get(0);
-    	Swing_classes.show_message(currentWash.getstatus());
+    public String checkStatus(Wash wash) {
+        return wash.toString();
     }
-    String s="";
-    
+
+    public String checkAllStatus() {
+        ArrayList<Wash> washes = plan.getWashList();
+        StringBuilder status = new StringBuilder();
+        for (Wash wash : washes) {
+            status.append(wash.toString()).append("\n");
+        }
+        return status.toString();
+    }
+
     public void checkExpense() {
     	for(Wash wash:plan.getWashList()) {
     		s+="\n"+wash.toString();
@@ -105,9 +124,16 @@ public class Student extends User {
     	Swing_classes.show_message(s);
     }
 
-
     public String getID() {
         return this.bitsID;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }
 

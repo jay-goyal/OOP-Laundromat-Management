@@ -1,12 +1,13 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Plan {
+public class Plan implements Serializable {
 	private final WashPlan washPlan;
 	private double expense;
 	private int numWashGiven;
 	private double extraCharge;
 	private ArrayList<Wash> washes=new ArrayList<>();
 	
-	Plan(WashPlan washPlan,double Expense,int numWashGiven){
+	Plan(WashPlan washPlan,double expense,int numWashGiven){
 		this.washPlan=washPlan;
 		this.expense=expense;
 		this.numWashGiven=numWashGiven;
@@ -44,10 +45,16 @@ public class Plan {
 	public ArrayList<Wash> getWashList() {
 		return washes;
 	}
-	
+	public void returnWash() {
+		washes.get(washes.size() - 1).setStatus("Delivered");
+	}
+
+	public void recvWash() {
+		washes.get(washes.size() - 1).setStatus("Recvd");
+	}
 }
 
-class Wash{
+class Wash implements Serializable{
 	private String DateGiven;
 	private String status;
 	double cost;
@@ -65,11 +72,16 @@ class Wash{
 	public void setDateGiven(String DateGiven) {
 		this.DateGiven=DateGiven;
 	}
-	
-	public String getstatus() {
+
+	@Override
+	public String toString() {
+		return "Given On: " + DateGiven + ", Current Status: " + status + ", Costs: " + cost;
+	}
+
+	public String getStatus() {
 		return status;
 	}
-	public void setstatus(String status) {
+	public void setStatus(String status) {
 		this.status=status;
 	}	
 }

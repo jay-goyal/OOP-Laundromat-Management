@@ -14,10 +14,14 @@ public class Main {
     //this method is for the initial operations like register,drop laundry,check balance.
     //right now only register functionality is available on pressing S
     public static Void action(String check) {
-        if (check.equals("S")) {
-            StudentGUI stdGui = new StudentGUI(studentFileWriter);
-            stdGui.setTypeOfFrame("Reg");
+        StudentGUI stdGui = new StudentGUI(studentFileWriter);
+        switch (check) {
+            case "S" -> stdGui.setTypeOfFrame("Reg");
+            case "D" -> stdGui.setTypeOfFrame("Drop");
+            case "C" -> stdGui.setTypeOfFrame("Check");
+            case "B" -> stdGui.setTypeOfFrame("AllCheck");
         }
+
         return null;
     }
 
@@ -26,8 +30,14 @@ public class Main {
         Path absFilesPath = relFilesPath.toAbsolutePath();
         Files.createDirectories(absFilesPath);
         studentFileWriter = new StudentFileWriter();
-        SwingSingleInput_GUI inputCheck = new SwingSingleInput_GUI("Enter S to Register and L to Login", "Submit", Main::action, WindowConstants.EXIT_ON_CLOSE);
+        SwingSingleInput_GUI inputCheck = new SwingSingleInput_GUI("Enter the operation", "Submit", Main::action, WindowConstants.EXIT_ON_CLOSE);
         inputCheck.setVisible(true);
+        JFrame frame = new JFrame();
+        frame.setTitle("Laundromat Application");
+        frame.setSize(inputCheck.getPreferredSize());
+        frame.add(inputCheck);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //Admin.adminRegister();
         //Admin.adminPrintDetails();
         //Swing_classes.multi_input();

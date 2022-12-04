@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SwingSingleInput_GUI extends JFrame {
+public class SwingSingleInput_GUI extends JInternalFrame {
     private Container c;
     private final JLabel inputLabel;
     private final JTextField input;
@@ -17,6 +17,7 @@ public class SwingSingleInput_GUI extends JFrame {
         c = getContentPane();
         c.setLayout(null);
         setBounds(50, 50, 350, 200);
+        setPreferredSize(new Dimension(350, 200));
         setFont(new Font("Arial", Font.PLAIN, 20));
 
         inputLabel = new JLabel(labelMessage);
@@ -82,10 +83,5 @@ public class SwingSingleInput_GUI extends JFrame {
         });
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    }
-
-
-    public String getInputVal() {
-        return inputVal;
     }
 };

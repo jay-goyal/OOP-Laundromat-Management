@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -30,7 +31,6 @@ public class StudentFileWriter {
                 String line = scanner.nextLine();
                 if (!line.isEmpty()) {
                     String[] student_data = line.split(",");
-                    System.out.println(Arrays.toString(student_data));
                     if (student_data[0].equals(userName) || student_data[4].equals(ID)) {
                         return true;
                     }
@@ -63,7 +63,7 @@ public class StudentFileWriter {
     }
 
     public void writeStudentToFile(Student student, boolean callIfAlreadyExists) throws IOException {
-        String fileName = "files/" + student.userName + "_" + student.getID() + ".txt";
+        String fileName = "files/" + student.getID() + ".txt";
         Path relPathStud = Paths.get(fileName);
         Path absPathStud = relPathStud.toAbsolutePath();
         try {
@@ -71,14 +71,14 @@ public class StudentFileWriter {
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
                 FileOutputStream fos = new FileOutputStream(absPathStud.toString(), true);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(student);
-                oos.close();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fos);
+                objectOutputStream.writeObject(student);
+                objectOutputStream.close();
                 fos.close();
             } else {
                 System.out.println("File already exists.");
                 if (callIfAlreadyExists) {
-                    FileOutputStream fos = new FileOutputStream(absPathStud.toString(), true);
+                    FileOutputStream fos = new FileOutputStream(absPathStud.toString(), false);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                     oos.writeObject(student);
                     oos.close();
@@ -89,6 +89,34 @@ public class StudentFileWriter {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        }
+    }
+
+    public Object ReadObjectFromFile(String ID) {
+        Path relPathOut = Paths.get("files/"+ID+".txt");
+        Path absPathOut = relPathOut.toAbsolutePath();
+
+        if (!checkUserExists("", ID)) {
+            Swing_classes.show_message("No user with ID " + ID + " exists");
+        }
+
+        try {
+
+            FileInputStream fileIn = new FileInputStream(absPathOut.toString());
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            Object ob = objectIn.readObject();
+            System.out.println(ob);
+            Student obj = (Student)ob;
+
+
+            System.out.println("The Object has been read from the file");
+            objectIn.close();
+            return obj;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }
