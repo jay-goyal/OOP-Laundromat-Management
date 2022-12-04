@@ -20,6 +20,7 @@ public class Main {
             case "D" -> stdGui.setTypeOfFrame("Drop");
             case "C" -> stdGui.setTypeOfFrame("Check");
             case "B" -> stdGui.setTypeOfFrame("AllCheck");
+            case "R" -> stdGui.setTypeOfFrame("Receive");
         }
 
         return null;

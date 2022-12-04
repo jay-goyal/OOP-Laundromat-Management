@@ -12,23 +12,21 @@ import java.util.Date;
 
 import javax.swing.*;
 
-public class DropWashGUI extends JInternalFrame {
+public class ReceiveWashGUI extends JInternalFrame {
     private StudentGUI studentGUI;
     private Container c;
     private JTextField ID;
     private JLabel IDLabel;
-    private JTextField weight;
-    private JLabel weightLabel;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private JTextField Date;
     ;
     private JLabel DateLabel;
-    private JButton DropButton;
+    private JButton ReceiveButton;
     private static StudentFileWriter studentFileWriter;
 
-    public DropWashGUI(StudentGUI studentGUI) {
+    public ReceiveWashGUI(StudentGUI studentGUI) {
         this.studentGUI = studentGUI;
-        setTitle("Drop Laundry");
+        setTitle("Receive Laundry");
         c = getContentPane();
         c.setLayout(null);
         c.setSize(630, 350);
@@ -45,16 +43,6 @@ public class DropWashGUI extends JInternalFrame {
         ID.setLocation(320, 20);
         c.add(ID);
 
-        weightLabel = new JLabel("Weight");
-        weightLabel.setSize(300, 20);
-        weightLabel.setLocation(10, 60);
-        c.add(weightLabel);
-
-        weight = new JTextField();
-        weight.setSize(300, 20);
-        weight.setLocation(320, 60);
-        c.add(weight);
-
         DateLabel = new JLabel("Date");
         DateLabel.setSize(300, 20);
         DateLabel.setLocation(10, 100);
@@ -65,13 +53,13 @@ public class DropWashGUI extends JInternalFrame {
         Date.setLocation(320, 100);
         c.add(Date);
 
-        DropButton = new JButton();
-        DropButton.setText("Drop");
-        DropButton.setSize(200, 25);
-        DropButton.setLocation(265, 250);
-        c.add(DropButton);
+        ReceiveButton = new JButton();
+        ReceiveButton.setText("Receive");
+        ReceiveButton.setSize(200, 25);
+        ReceiveButton.setLocation(265, 250);
+        c.add(ReceiveButton);
 
-        DropButton.addActionListener(e -> {
+        ReceiveButton.addActionListener(e -> {
             try {
                 actionListener(e);
             } catch (ParseException e1) {
@@ -84,11 +72,10 @@ public class DropWashGUI extends JInternalFrame {
 
     public void actionListener(ActionEvent e) throws ParseException {
         String Id = ID.getText();
-        double Weight = Double.parseDouble(weight.getText());
         Date date = dateFormat.parse(Date.getText());
         dateFormat.applyPattern("EEE, d MMM yyyy");
         String today = dateFormat.format(date);
-        studentGUI.communicateDropData(Id, Weight, today);
+        studentGUI.communicateReceiveData(Id, today);
     }
 
 }
