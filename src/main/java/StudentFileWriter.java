@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class StudentFileWriter {
@@ -42,10 +43,31 @@ public class StudentFileWriter {
         return false;
     }
 
+    public ArrayList<String> getAllIDs(Hostel hostel) {
+        Scanner scanner = null;
+        ArrayList<String> IDs = null;
+        try {
+            scanner = new Scanner(file);
+            //now read the file line by line
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.isEmpty()) {
+                    String[] student_data = line.split(",");
+                    if (Hostel.valueOf(student_data[6]).equals(hostel)) {
+                        IDs.add(student_data[4]);
+                    }
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (scanner != null) scanner.close();
+        }
+        return IDs;
+    }
+
     public void regUserToFile(String userName, String fullName, String password, String secretWord, String ID, String phoneNumber, Hostel hostel) throws IOException {
         Writer out = null;
-        while (!file.exists()) {
-        }
         try {
             String string_data = userName + "," + fullName + "," + password + "," + secretWord + "," + ID + "," + phoneNumber + "," + hostel;
             Path relPathOut = Paths.get("files/Student_data.txt");
@@ -90,12 +112,13 @@ public class StudentFileWriter {
         }
     }
 
-    public Object readStudentFromFile(String ID) {
+    public Student readStudentFromFile(String ID) {
         Path relPathOut = Paths.get("files/"+ID+".txt");
         Path absPathOut = relPathOut.toAbsolutePath();
 
         if (!checkUserExists("", ID)) {
             Swing_classes.show_message("No user with ID " + ID + " exists");
+            return null;
         }
 
         try {
