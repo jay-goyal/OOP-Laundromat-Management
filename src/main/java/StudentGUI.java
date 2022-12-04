@@ -180,6 +180,7 @@ public class StudentGUI implements Runnable {
             student = studentFileWriter.readStudentFromFile(ID);
             if (student == null) {
                 Swing_classes.show_message("Student does not exist");
+                frame.dispose();
                 return;
             }
             Student.studentFileWriter = studentFileWriter;
