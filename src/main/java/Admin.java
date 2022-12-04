@@ -100,6 +100,32 @@ public class Admin extends User implements Runnable{
         }
     }
 
+    public static void adminLogin() throws IOException {
+		String logIn_username=Swing_classes.create_gui("Enter username");
+		String logIn_password=Swing_classes.create_gui("Enter password");
+		Path logIn_RelPath = Paths.get("files/Admin_data.txt");
+		Path logIn_AbsPath = logIn_RelPath.toAbsolutePath();
+		File logIn_File = new File(logIn_AbsPath.toUri());
+
+		try {
+			Scanner logIn_Scanner = new Scanner(logIn_File);
+
+			//now read the file line by line
+			while (logIn_Scanner.hasNextLine()) {
+				String logIn_Line = logIn_Scanner.nextLine();
+				String[] logIn_admin_data=logIn_Line.split(",");
+				
+				if(logIn_admin_data[0].equals(logIn_username)&& logIn_admin_data[1].equals(logIn_password)){
+					Swing_classes.show_message("Admin logged in successfully!");
+				}
+	}
+	logIn_Scanner.close();
+	
+	}
+	catch (FileNotFoundException e) {
+		System.out.println(e.getMessage());}
+}
+
     public static void adminPrintDetails() {
         String s = "The Student details are as follows-";
         Path relPath = Paths.get("files/Student_data.txt");
