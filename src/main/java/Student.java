@@ -99,6 +99,23 @@ public class Student extends User {
         Swing_classes.show_message("Laundry dropped. It will be delivered on " + deliveryDate);
     }
 
+    public void receiveWash(String date){
+        for(Wash wash:plan.getWashList()){
+            if(date.equals(wash.getDateGiven())){
+                if(wash.getStatus().equals("On Delivery")){
+                    wash.setStatus("Delivered");
+                    Swing_classes.show_message("The laundry has been received !!!");
+                    return;
+                }
+                else {
+                    Swing_classes.show_message("Laundry status:"+wash.getStatus()+". Wait till status is marked On Delivery");
+                    return;
+                }
+            }
+        }
+        Swing_classes.show_message("You did not drop a wash on this date!");
+    }
+
     public Wash getLastWash() {
         ArrayList<Wash> washes = plan.getWashList();
         System.out.println(washes);
@@ -125,6 +142,7 @@ public class Student extends User {
         s += "\n" + plan.getExpense();
         Swing_classes.show_message(s);
     }
+
 
     public String getID() {
         return this.bitsID;

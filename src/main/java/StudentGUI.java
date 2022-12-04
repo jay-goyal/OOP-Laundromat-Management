@@ -37,6 +37,13 @@ class RegData {
      }
  }
 
+class ReceiveData {
+    String date;
+    public ReceiveData(String date) {
+        this.date = date;
+    }
+}
+
 public class StudentGUI implements Runnable {
     protected final Thread t;
     private JInternalFrame internalFrame;
@@ -45,6 +52,7 @@ public class StudentGUI implements Runnable {
     private boolean shouldRun;
     private RegData regData;
     private DropData dropData;
+    private ReceiveData receiveData;
     private Student student = null;
     private static StudentFileWriter studentFileWriter;
 
@@ -87,6 +95,13 @@ public class StudentGUI implements Runnable {
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
             }
+            case "Receive"->{
+                this.internalFrame = new ReceiveWashGUI(this);
+                frame.setTitle(internalFrame.getTitle());
+                frame.setSize(internalFrame.getPreferredSize());
+                internalFrame.setTitle("");
+                frame.add(internalFrame);
+            }
             default -> frame.setVisible(false);
         }
     }
@@ -107,6 +122,9 @@ public class StudentGUI implements Runnable {
             if (typeOfFrame.equals("AllCheck")) {
                 String status = student.checkAllStatus();
                 Swing_classes.show_message(status);
+            }
+            if (typeOfFrame.equals("Receive")) {
+                student.receiveWash(receiveData.date);
             }
             shouldRun = false;
         }
@@ -129,7 +147,7 @@ public class StudentGUI implements Runnable {
 
     public void communicateRegData(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
         if (studentFileWriter.checkUserExists(userName, bitsId)) {
-            Swing_classes.show_message("User with same user name already exists");
+            Swing_classes.show_message("User with same BITS ID already exists");
             Swing_classes.close_gui();
             return;
         }
@@ -149,12 +167,23 @@ public class StudentGUI implements Runnable {
         t.start();
     }
 
+    public void communicateReceiveData(String ID,String today) {
+        synchronized (studentFileWriter.writeLock) {
+            student = (Student) studentFileWriter.readStudentFromFile(ID);
+            Student.studentFileWriter = studentFileWriter;
+        }
+        receiveData = new ReceiveData(today);
+        shouldRun = true;
+        t.start();
+    }
+
+
     private void regSuccess(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
         //Check if the username is already taken. Username is always stored 1st, so it will be at 1st positon of arrray
         //We have printing the details of the plans in a new window
         String s = "DETAILS OF WASHPLANS:\n";
         for (WashPlan plan : EnumSet.allOf(WashPlan.class)) {
-            s += "\n" + plan.toString() + " " + "Iron included:" + plan.isIron + " " + "Number of washes in plan:" + plan.numWashes + " " + "Cost of each wash:" + plan.costPerWash;
+            s += "\n" + plan.toString() + ":-> " + "Iron included:" + plan.isIron + ";  " + "Number of washes in plan:" + plan.numWashes + ";  " + "Cost of each wash:" + plan.costPerWash+";  Max weight per wash:"+plan.weightPerWash+"\n";
         }
         Swing_classes.show_message(s);
         String washPlan = Swing_classes.create_gui("WashPlan");

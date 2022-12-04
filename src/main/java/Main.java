@@ -32,6 +32,10 @@ public class Main {
                 StudentGUI stdGui = new StudentGUI(studentFileWriter);
                 stdGui.setTypeOfFrame("AllCheck");
             }
+            case "R" -> {
+                StudentGUI stdGui = new StudentGUI(studentFileWriter);
+                stdGui.setTypeOfFrame("Receive");
+            }
             case "AC" -> {
                 AdminGUI adminGui = new AdminGUI();
                 adminGui.setTypeOfFrame("PrintStud");

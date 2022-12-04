@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 public class Plan implements Serializable {
-	private final WashPlan washPlan;
+	private WashPlan washPlan;
 	private double expense;
 	private int numWashGiven;
 	private double extraCharge;
@@ -16,6 +16,10 @@ public class Plan implements Serializable {
 	
 	public WashPlan getWashPlan() {
 		return washPlan;
+	}
+
+	public void setWashPlan(WashPlan washPlan) {
+		 this.washPlan=washPlan;
 	}
 	
 	public double getExpense() {
