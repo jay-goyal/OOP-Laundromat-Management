@@ -106,7 +106,6 @@ public class Student extends User {
                             studentFileWriter.writeLock.notify();
                         }
                     }
-                    return;
                 } else {
                     Swing_classes.show_message("Laundry status:" + wash.getStatus() + ". Wait till status is marked On Delivery");
                     return;
