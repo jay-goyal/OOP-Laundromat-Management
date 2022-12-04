@@ -143,7 +143,7 @@ public class Admin extends User {
                 if (student_data.length == 1) {
                     continue;
                 }
-                s += "\n Name:" + student_data[1] + ",  Hostel:" + student_data[4] + ",  Phone:" + student_data[5];
+                s += "\n Name:" + student_data[1] + ",  Hostel:" + student_data[6] + ",  Phone:" + student_data[5]+",  BITS ID:" + student_data[4]  ;
 
             }
         } catch (FileNotFoundException e) {
