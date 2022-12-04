@@ -43,7 +43,7 @@ public class ReceiveWashGUI extends JInternalFrame {
         ID.setLocation(320, 20);
         c.add(ID);
 
-        DateLabel = new JLabel("Date");
+        DateLabel = new JLabel("Date(dd-mm-yyyy)");
         DateLabel.setSize(300, 20);
         DateLabel.setLocation(10, 100);
         c.add(DateLabel);

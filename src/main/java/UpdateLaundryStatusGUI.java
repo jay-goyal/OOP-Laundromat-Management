@@ -44,7 +44,7 @@ public class UpdateLaundryStatusGUI extends JInternalFrame {
         bitsId.setLocation(320, 60);
         c.add(bitsId);
 
-        DateLabel = new JLabel("Date");
+        DateLabel = new JLabel("Date(dd-mm-yyyy)");
         DateLabel.setSize(300, 20);
         DateLabel.setLocation(10, 100);
         c.add(DateLabel);
