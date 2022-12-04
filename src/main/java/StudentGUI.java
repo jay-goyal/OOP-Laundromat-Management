@@ -147,7 +147,7 @@ public class StudentGUI implements Runnable {
 
     public void communicateRegData(String userName, String fullName, String password, String secretWord, String bitsId, String phoneNumber, Hostel hostel) {
         if (studentFileWriter.checkUserExists(userName, bitsId)) {
-            Swing_classes.show_message("User with same user name already exists");
+            Swing_classes.show_message("User with same BITS ID already exists");
             Swing_classes.close_gui();
             return;
         }
