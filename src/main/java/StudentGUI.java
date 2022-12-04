@@ -94,7 +94,8 @@ public class StudentGUI implements Runnable {
                 frame.setSize(internalFrame.getPreferredSize());
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
-            case "Receive":
+            }
+            case "Receive"->{
                 this.internalFrame = new ReceiveWashGUI(this);
                 frame.setTitle(internalFrame.getTitle());
                 frame.setSize(internalFrame.getPreferredSize());
