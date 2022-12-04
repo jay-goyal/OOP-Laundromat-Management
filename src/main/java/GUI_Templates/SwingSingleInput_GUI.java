@@ -52,6 +52,7 @@ public class SwingSingleInput_GUI extends JInternalFrame {
     public SwingSingleInput_GUI(String labelMessage, String buttonText, Actionable action) {
         c = getContentPane();
         c.setLayout(null);
+        setPreferredSize(new Dimension(350, 200));
         setBounds(50, 50, 350, 200);
         setFont(new Font("Arial", Font.PLAIN, 20));
 

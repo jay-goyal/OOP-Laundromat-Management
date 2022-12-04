@@ -1,132 +1,179 @@
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 
-public class Admin extends User implements Runnable{
+public class Admin extends User {
+
+    private boolean isLoggedIn;
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy");
+    public static StudentFileWriter studentFileWriter = Main.studentFileWriter;
+
     public Admin(String userName, String fullName, String password, String secretWord) {
         this.userName = userName;
         this.fullName = fullName;
         this.password = password;
         this.secretWord = secretWord;
+        isLoggedIn = false;
+    }
+
+    public static Admin getAdminFromFile() {
+        Path relPathOut = Paths.get("files/admin.txt");
+        Path absPathOut = relPathOut.toAbsolutePath();
+
+        if (!new File(absPathOut.toString()).isFile()) {
+            return new Admin("admin", "Admin User", "admin123", "admin");
+        }
+
+        try {
+
+            FileInputStream fileIn = new FileInputStream(absPathOut.toString());
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            Object ob = objectIn.readObject();
+            System.out.println(ob);
+            Admin obj = (Admin) ob;
+
+            System.out.println("The Object has been read from the file");
+            objectIn.close();
+            return obj;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new Admin("admin", "Admin User", "admin123", "admin");
+        }
+    }
+
+    public void writeAdminToFile() {
+        String fileName = "files/admin.txt";
+        Path relPathStud = Paths.get(fileName);
+        Path absPathStud = relPathStud.toAbsolutePath();
+        try {
+            File myObj = new File(absPathStud.toUri());
+            System.out.println("File created: " + myObj.getName());
+            FileOutputStream fos = new FileOutputStream(absPathStud.toString(), true);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fos);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+            fos.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 
     public void changeStudentPlan(Student student, boolean isIron, int numWashes, double costPerWash) {
         Plan activePlan = student.getPlan();
+        Plan newPlan;
         if (activePlan.getNumWashGiven() >= numWashes) {
+            newPlan = new Plan(activePlan.getWashPlan(), (activePlan.getNumWashGiven() + 1) * activePlan.getWashPlan().costPerWash, activePlan.getNumWashGiven() + 1);
+        } else {
+            newPlan = new Plan(activePlan.getWashPlan(), (activePlan.getNumWashGiven() + 1) * activePlan.getWashPlan().costPerWash, numWashes);
+        }
+        newPlan.addWash(activePlan.getWashList());
+        student.setPlan(newPlan);
+    }
+
+    public void login(String username, String password) {
+        isLoggedIn = super.checkLogin(username, password);
+    }
+
+    public void getLaundryStud(String ID, Date date) {
+        if (!isLoggedIn) {
+            Swing_classes.show_message("Admin not logged in");
             return;
         }
-    }
-
-    public void getWeekLaundry(Student[] students) {
-        ArrayList<Wash> washes = new ArrayList();
-        for (Student student : students) {
-            if (ChronoUnit.DAYS.between(LocalDate.parse(student.getLastWash().getDateGiven()), LocalDate.now()) < 7) {
-                washes.add(student.getLastWash());
+        Student student;
+        synchronized (studentFileWriter.writeLock) {
+            student = studentFileWriter.readStudentFromFile(ID);
+            studentFileWriter.notify();
+        }
+        if (student != null) {
+            ArrayList<Wash> washes = student.getPlan().getWashList();
+            StringBuilder status = new StringBuilder();
+            String dateAsStr = simpleDateFormat.format(date);
+            for (Wash wash : washes) {
+                if (wash.getDateGiven().equals(dateAsStr)) {
+                    status.append(student.checkStatus(wash)).append("\n");
+                }
             }
+            Swing_classes.show_message(status.toString());
         }
     }
 
-    public static void checkDelivery() {
-        Student[] students = new Student[10];
-        for (Student student : students) {
-            if (ChronoUnit.DAYS.between(LocalDate.parse(student.getLastWash().getDateGiven()), LocalDate.now()) >= 2) {
-                Plan activePlan = student.getPlan();
-                activePlan.returnWash();
+    public void updateLaundry(String ID, Date date, String status) {
+        if (!isLoggedIn) {
+            Swing_classes.show_message("Admin not logged in");
+            return;
+        }
+        Student student;
+        synchronized (studentFileWriter.writeLock) {
+            student = studentFileWriter.readStudentFromFile(ID);
+            studentFileWriter.notify();
+        }
+        if (student != null) {
+            ArrayList<Wash> washes = student.getPlan().getWashList();
+            String dateAsStr = simpleDateFormat.format(date);
+            for (Wash wash : washes) {
+                if (wash.getDateGiven().equals(dateAsStr)) {
+                    wash.setStatus(status);
+                }
             }
+            Swing_classes.show_message("Status of all washes given updated");
         }
     }
 
-    public double getRevenue(Student[] students) {
-        double revenue = 0;
-        for (Student student : students) {
-            revenue += student.getPlan().getExpense();
+    public void getWeekLaundry() {
+        if (!isLoggedIn) {
+            Swing_classes.show_message("Admin not logged in");
+            return;
         }
-        return revenue;
+        StringBuilder revString = new StringBuilder();
+        for (Hostel hostel : Hostel.values()) {
+            ArrayList<String> IDs;
+            synchronized (studentFileWriter.writeLock) {
+                IDs = studentFileWriter.getAllIDs(hostel);
+            }
+            double hostelRevenue = 0;
+            for (String ID : IDs) {
+                Student student;
+                synchronized (studentFileWriter.writeLock) {
+                    student = studentFileWriter.readStudentFromFile(ID);
+                    studentFileWriter.writeLock.notify();
+                }
+//                if (ChronoUnit.DAYS.between(LocalDate.parse(student.getLastWash().getDateGiven()), LocalDate.now()) < 7) {
+//
+//                }
+
+                if (student != null) {
+                    hostelRevenue += student.getPlan().getExpense();
+                }
+            }
+            revString.append(hostel.toString()).append(" revenue is ").append(hostelRevenue).append("\n");
+        }
+        Swing_classes.show_message(revString.toString());
+    }
+
+    public void logout() {
+        if (isLoggedIn) {
+            isLoggedIn = false;
+            Swing_classes.show_message("Admin logged out successfully");
+        } else {
+            Swing_classes.show_message("Admin not logged in");
+        }
     }
 
     //following are the new classes added
-    public static void adminRegister() throws IOException {
-
-        Writer out = null;
-        Swing_classes.show_message("You will be allowed to register as admin only if you can correctly answer the secret question in the first attempt");
-        String check = Swing_classes.create_gui("Which detergent is used in laundromat");
-        if (check.equals("Surf Excel")) {
-            String username = Swing_classes.create_gui("Enter username");
-            String password = Swing_classes.create_gui("Enter password");
-            Path relPath = Paths.get("files/Admin_data.txt");
-            Path absPath = relPath.toAbsolutePath();
-            File file = new File(absPath.toUri());
-
-            try {
-                Scanner scanner = new Scanner(file);
-
-                //now read the file line by line
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] admin_data = line.split(",");
-
-                    if (admin_data[0].equals(username) && admin_data[1].equals(password)) {
-                        Swing_classes.show_message("You have already registered!! ");
-                        return;
-                    }
-                }
-                try {
-                    String string_data = username + "," + password;
-
-                    Path relPathOut = Paths.get("files/Admin_data.txt");
-                    Path absPathOut = relPathOut.toAbsolutePath();
-                    out = new FileWriter(absPathOut.toString(), true);
-                    out.write(System.lineSeparator());
-                    out.write(string_data);
-                } catch (Exception e) {
-                    System.out.println(e);
-                } finally {
-                    out.close();
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
-            Swing_classes.show_message("Wrong answer.Bye!!");
+    public void adminPrintDetails() {
+        if (!isLoggedIn) {
+            Swing_classes.show_message("Admin not logged in");
             return;
         }
-    }
 
-    public static void adminLogin() throws IOException {
-		String logIn_username=Swing_classes.create_gui("Enter username");
-		String logIn_password=Swing_classes.create_gui("Enter password");
-		Path logIn_RelPath = Paths.get("files/Admin_data.txt");
-		Path logIn_AbsPath = logIn_RelPath.toAbsolutePath();
-		File logIn_File = new File(logIn_AbsPath.toUri());
-
-		try {
-			Scanner logIn_Scanner = new Scanner(logIn_File);
-
-			//now read the file line by line
-			while (logIn_Scanner.hasNextLine()) {
-				String logIn_Line = logIn_Scanner.nextLine();
-				String[] logIn_admin_data=logIn_Line.split(",");
-				
-				if(logIn_admin_data[0].equals(logIn_username)&& logIn_admin_data[1].equals(logIn_password)){
-					Swing_classes.show_message("Admin logged in successfully!");
-				}
-	}
-	logIn_Scanner.close();
-	
-	}
-	catch (FileNotFoundException e) {
-		System.out.println(e.getMessage());}
-}
-
-    public static void adminPrintDetails() {
         String s = "The Student details are as follows-";
         Path relPath = Paths.get("files/Student_data.txt");
         Path absPath = relPath.toAbsolutePath();
@@ -156,7 +203,6 @@ public class Admin extends User implements Runnable{
         String time = data[2];
         //System.out.println(s);
 
-
         Writer out = null;
         Path relPath = Paths.get("files/Hostel_data.txt");
         Path absPath = relPath.toAbsolutePath();
@@ -173,11 +219,6 @@ public class Admin extends User implements Runnable{
         } finally {
             out.close();
         }
-
-    }
-
-    @Override
-    public void run() {
 
     }
 }

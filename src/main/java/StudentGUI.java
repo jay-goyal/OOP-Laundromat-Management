@@ -42,13 +42,11 @@ public class StudentGUI implements Runnable {
     private JInternalFrame internalFrame;
     private final JFrame frame;
     private String typeOfFrame;
-    private boolean isClosingFlag;
     private boolean shouldRun;
     private RegData regData;
     private DropData dropData;
     private Student student = null;
     private static StudentFileWriter studentFileWriter;
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     public StudentGUI(StudentFileWriter studentFileWriter) {
         this.t = new Thread(this);
@@ -56,12 +54,10 @@ public class StudentGUI implements Runnable {
         typeOfFrame = "Reg";
         frame.setBounds(50, 50, 400, 150);
         frame.setVisible(true);
-        isClosingFlag = false;
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                isClosingFlag = true;
             }
         });
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -70,36 +66,28 @@ public class StudentGUI implements Runnable {
 
     private void setInternalFrame() {
         switch (typeOfFrame) {
-            case "Reg":
+            case "Reg" -> {
                 this.internalFrame = new StudentGUIReg(this);
                 frame.setTitle(internalFrame.getTitle());
                 frame.setSize(internalFrame.getPreferredSize());
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
-                break;
-            case "Drop":
+            }
+            case "Drop" -> {
                 this.internalFrame = new DropWashGUI(this);
                 frame.setTitle(internalFrame.getTitle());
                 frame.setSize(internalFrame.getPreferredSize());
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
-                break;
-            case "Check":
+            }
+            case "Check", "AllCheck" -> {
                 this.internalFrame = new SwingSingleInput_GUI("Enter your ID", "Submit", this::getIDForCheck);
                 frame.setTitle("Get Laundry Status");
                 frame.setSize(internalFrame.getPreferredSize());
                 internalFrame.setTitle("");
                 frame.add(internalFrame);
-                break;
-            case "AllCheck":
-                this.internalFrame = new SwingSingleInput_GUI("Enter your ID", "Submit", this::getIDForCheck);
-                frame.setTitle("Get Laundry Status");
-                frame.setSize(internalFrame.getPreferredSize());
-                internalFrame.setTitle("");
-                frame.add(internalFrame);
-                break;
-            default:
-                t.interrupt();
+            }
+            default -> frame.setVisible(false);
         }
     }
 
@@ -131,8 +119,9 @@ public class StudentGUI implements Runnable {
 
     public void communicateCheckData(String ID) {
         synchronized (studentFileWriter.writeLock) {
-            student = (Student) studentFileWriter.readStudentFromFile(ID);
+            student = studentFileWriter.readStudentFromFile(ID);
             Student.studentFileWriter = studentFileWriter;
+            studentFileWriter.writeLock.notify();
         }
         shouldRun = true;
         t.start();
@@ -151,8 +140,9 @@ public class StudentGUI implements Runnable {
 
     public void communicateDropData(String ID, double weight, String today) {
         synchronized (studentFileWriter.writeLock) {
-            student = (Student) studentFileWriter.readStudentFromFile(ID);
+            student = studentFileWriter.readStudentFromFile(ID);
             Student.studentFileWriter = studentFileWriter;
+            studentFileWriter.notify();
         }
         dropData = new DropData(weight, today);
         shouldRun = true;

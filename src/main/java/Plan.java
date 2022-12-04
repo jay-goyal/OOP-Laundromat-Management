@@ -42,6 +42,12 @@ public class Plan implements Serializable {
 	public void addWash(Wash wash) {
 		washes.add(wash);
 	}
+
+	public void addWash(ArrayList<Wash> wash) {
+		for (Wash w : wash) {
+			washes.add(w);
+		}
+	}
 	public ArrayList<Wash> getWashList() {
 		return washes;
 	}

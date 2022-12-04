@@ -7,8 +7,8 @@ public abstract class User implements Serializable {
 	protected String password;
 	protected String secretWord;
 
-	public boolean checkLogin(String testPass) {
-		if (testPass.equals(password)) {
+	public boolean checkLogin(String username, String testPass) {
+		if (userName.equals(username) && testPass.equals(password)) {
 			System.out.println(fullName + " has logged in.");
 			return true;
 		} else {
