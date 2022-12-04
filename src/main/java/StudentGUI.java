@@ -183,7 +183,7 @@ public class StudentGUI implements Runnable {
         //We have printing the details of the plans in a new window
         String s = "DETAILS OF WASHPLANS:\n";
         for (WashPlan plan : EnumSet.allOf(WashPlan.class)) {
-            s += "\n" + plan.toString() + " " + "Iron included:" + plan.isIron + " " + "Number of washes in plan:" + plan.numWashes + " " + "Cost of each wash:" + plan.costPerWash;
+            s += "\n" + plan.toString() + ":-> " + "Iron included:" + plan.isIron + ";  " + "Number of washes in plan:" + plan.numWashes + ";  " + "Cost of each wash:" + plan.costPerWash+";  Max weight per wash:"+plan.weightPerWash+"\n";
         }
         Swing_classes.show_message(s);
         String washPlan = Swing_classes.create_gui("WashPlan");
